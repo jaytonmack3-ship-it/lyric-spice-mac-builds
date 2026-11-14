@@ -1,0 +1,28 @@
+name: Apple Silicon release build
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  mac:
+    runs-on: macos-15
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Build and test encrypted private input
+        env:
+          SOURCE_KEY: ${{ secrets.SOURCE_KEY }}
+        run: node run.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lyric-spice-mac-arm64-1.1.5
+          retention-days: 7
+          path: |
+            app/dist/macos/*.zip
+            app/dist/macos/*.json
+            app/dist/macos/*.png
+            logs.enc
