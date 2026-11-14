@@ -1,6 +1,10 @@
 name: Apple Silicon release build
 on:
   workflow_dispatch:
+    inputs:
+      renderer_only:
+        type: boolean
+        default: false
 permissions:
   contents: read
 jobs:
@@ -14,6 +18,7 @@ jobs:
           node-version: '24'
       - name: Build and test encrypted private input
         env:
+          RENDERER_ONLY: ${{ inputs.renderer_only }}
           SOURCE_KEY: ${{ secrets.SOURCE_KEY }}
         run: node run.cjs
       - uses: actions/upload-artifact@v4
